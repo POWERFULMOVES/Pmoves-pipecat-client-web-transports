@@ -5,6 +5,44 @@ All notable changes to **Pipecat Small WebRTC Transport** will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/small-webrtc-transport-v1.11.1...small-webrtc-transport-v1.11.2) (2026-10-29)
+
+### Other
+
+* `@pipecat-ai/small-webrtc-transport` now requires `@pipecat-ai/client-js` `~1.16.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.16.x alongside this release. ([c5465cd](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c5465cddb143693cc1cac445b47c64e13af59ca4))
+
+## [1.11.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/small-webrtc-transport-v1.11.0...small-webrtc-transport-v1.11.1) (2026-10-25)
+
+### Changed
+
+* `@pipecat-ai/small-webrtc-transport` now requires `@pipecat-ai/client-js` `~1.15.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.15.x alongside this release. ([d2a5122](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/d2a51222639c6013e1202d74a6abea17204b41df))
+
+## [1.11.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/small-webrtc-transport-v1.10.8...small-webrtc-transport-v1.11.0) (2026-10-16)
+
+### Features
+
+* `SmallWebRTCTransport` now implements the `mediaSupport` getter. The bot's audio and video are always supported, and the user's microphone, camera, and screen share follow what the media manager reports through `MediaManager.mediaSupport`. With the default `DailyMediaManager`, screen share is reported as unsupported on browsers without `getDisplayMedia`, such as most mobile browsers. Requires `@pipecat-ai/client-js` 1.14.0 or later. ([14a218c](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/14a218cbd9ce71b29d0f013420e493426c942eb3))
+
+### Bug Fixes
+
+* Fixed calls losing media after an ICE-restart reconnection. When the transport replaced a failed peer connection, closing the old connection stopped the local microphone and camera tracks the new connection was sending, and the old remote track ending removed the new remote track so `onTrackStarted` never fired for the recovered audio. Local tracks still in use now stay live, and events from the old connection's remote tracks no longer affect the replacement tracks. ([7f5011e](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/7f5011ee19cbe7221df78826cd100bd2eacfc0cb))
+
+### Other
+
+* Bumped the `@pipecat-ai/client-js` peer dependency to `~1.14.0`. Projects using `@pipecat-ai/small-webrtc-transport` should upgrade `@pipecat-ai/client-js` to 1.14.x. ([6f1bf1a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/6f1bf1a37e7077e54e27a92b810c1e146be781fe))
+* `@pipecat-ai/small-webrtc-transport` now depends on `@daily-co/daily-js` `^0.94.0` (previously `^0.90.0`), which its `DailyMediaManager`-based media handling uses. ([1ffa4f8](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/1ffa4f87edd988bf289768877c16c6d4dd37567d))
+
+### Miscellaneous Chores
+
+* update transport-lib dependencies to 0.2.0 ([730e0e4](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/730e0e4ca2a2abc9f1c1a5b9b88eff4495e19c5a))
+
+## [1.10.8](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/small-webrtc-transport-v1.10.7...small-webrtc-transport-v1.10.8) (2026-09-15)
+
+
+### Bug Fixes
+
+* Fixed issue with mute toggle states being delayed ([51954df](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/51954df18f7f1f23b6965e863ac0425493f9be4d))
+
 ## [1.10.7](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/small-webrtc-transport-v1.10.6...small-webrtc-transport-v1.10.7) (2026-09-03)
 
 

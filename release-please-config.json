@@ -5,15 +5,16 @@
   "separate-pull-requests": true,
   "pull-request-title-pattern": "chore${scope}: release ${component} ${version}",
   "exclude-merges": true,
+  "plugins": ["node-workspace"],
   "packages": {
+    "lib": {
+      "component": "transport-lib",
+      "package-name": "@pipecat-ai/transport-lib",
+      "changelog-path": "CHANGELOG.md"
+    },
     "transports/daily": {
       "component": "daily-transport",
       "package-name": "@pipecat-ai/daily-transport",
-      "changelog-path": "CHANGELOG.md"
-    },
-    "transports/gemini-live-websocket-transport": {
-      "component": "gemini-live-websocket-transport",
-      "package-name": "@pipecat-ai/gemini-live-websocket-transport",
       "changelog-path": "CHANGELOG.md"
     },
     "transports/livekit-transport": {
@@ -24,11 +25,6 @@
     "transports/moq-transport": {
       "component": "moq-transport",
       "package-name": "@pipecat-ai/moq-transport",
-      "changelog-path": "CHANGELOG.md"
-    },
-    "transports/openai-realtime-webrtc-transport": {
-      "component": "openai-realtime-webrtc-transport",
-      "package-name": "@pipecat-ai/openai-realtime-webrtc-transport",
       "changelog-path": "CHANGELOG.md"
     },
     "transports/small-webrtc-transport": {

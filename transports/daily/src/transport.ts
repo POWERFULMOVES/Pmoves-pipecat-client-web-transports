@@ -21,6 +21,7 @@ import Daily, {
 import {
   DeviceArray,
   DeviceError,
+  MediaSupport,
   MessageTooLargeError,
   Participant,
   PipecatClientOptions,
@@ -34,7 +35,10 @@ import {
   logger,
 } from "@pipecat-ai/client-js";
 
-import { MediaStreamRecorder } from "../../../lib/wavtools";
+import {
+  browserSupportsScreenShare,
+  MediaStreamRecorder,
+} from "@pipecat-ai/transport-lib";
 
 import packageJson from "../package.json";
 
@@ -129,6 +133,20 @@ export class DailyTransport extends Transport {
   private _currentAudioTrack: MediaStreamTrack | null = null;
   private _audioQueue: ArrayBuffer[] = [];
   declare private _mediaStreamRecorder: MediaStreamRecorder;
+
+  // NOTE: deliberately not read live off `this._daily.localAudio()` /
+  // `localVideo()` in the isMicEnabled/isCamEnabled getters below. Daily
+  // fires 'track-started'/'track-stopped' *before* it commits the new state
+  // to the participant object those calls read from (daily-js emits the
+  // track event from within its participant-updated handling, then
+  // reassigns its internal participant cache afterwards). Code that reacts
+  // to TrackStarted/TrackStopped by reading isMicEnabled/isCamEnabled to
+  // resync UI state — e.g. PipecatClientState's mic/cam sync — would
+  // otherwise always observe the pre-toggle value. These fields are updated
+  // synchronously in enableMic/enableCam and in handleTrackStarted/
+  // handleTrackStopped, before those callbacks fire.
+  private _micEnabled: boolean = true;
+  private _camEnabled: boolean = false;
 
   constructor(opts: DailyTransportConstructorOptions = {}) {
     super();
@@ -236,6 +254,8 @@ export class DailyTransport extends Transport {
       // Default is mic on
       this._dailyFactoryOptions.startAudioOff = !(options.enableMic ?? true);
     }
+    this._camEnabled = !this._dailyFactoryOptions.startVideoOff;
+    this._micEnabled = !this._dailyFactoryOptions.startAudioOff;
 
     this.attachEventListeners();
 
@@ -330,24 +350,26 @@ export class DailyTransport extends Transport {
     // joined — pre-session, daily-js can't act on the request because the
     // call object isn't part of a meeting yet.
     this._dailyFactoryOptions.startAudioOff = !enable;
+    this._micEnabled = enable;
     if (this._daily.participants()?.local) {
       this._daily.setLocalAudio(enable);
     }
   }
 
   get isMicEnabled() {
-    return this._daily.localAudio();
+    return this._micEnabled;
   }
 
   enableCam(enable: boolean) {
     this._dailyFactoryOptions.startVideoOff = !enable;
+    this._camEnabled = enable;
     if (this._daily.participants()?.local) {
       this._daily.setLocalVideo(enable);
     }
   }
 
   get isCamEnabled() {
-    return this._daily.localVideo();
+    return this._camEnabled;
   }
 
   public enableScreenShare(enable: boolean) {
@@ -360,6 +382,17 @@ export class DailyTransport extends Transport {
 
   public get isSharingScreen(): boolean {
     return this._daily.localScreenAudio() || this._daily.localScreenVideo();
+  }
+
+  /** Carries every kind of media; screen share where the browser can. */
+  get mediaSupport(): MediaSupport {
+    return {
+      mic: true,
+      cam: true,
+      screenShare: browserSupportsScreenShare(),
+      botAudio: true,
+      botVideo: true,
+    };
   }
 
   tracks() {
@@ -429,13 +462,20 @@ export class DailyTransport extends Transport {
     this._callbacks.onMicUpdated?.(infos.mic as MediaDeviceInfo);
     this._callbacks.onSpeakerUpdated?.(infos.speaker as MediaDeviceInfo);
 
-    // Instantiate audio observers
-    if (!this._daily.isLocalAudioLevelObserverRunning())
-      await this._daily.startLocalAudioLevelObserver(100);
-    if (!this._daily.isRemoteParticipantsAudioLevelObserverRunning())
-      await this._daily.startRemoteParticipantsAudioLevelObserver(100);
+    await this.startAudioLevelObservers();
 
     this.state = "initialized";
+  }
+
+  private async startAudioLevelObservers() {
+    try {
+      if (!this._daily.isLocalAudioLevelObserverRunning())
+        await this._daily.startLocalAudioLevelObserver(100);
+      if (!this._daily.isRemoteParticipantsAudioLevelObserverRunning())
+        await this._daily.startRemoteParticipantsAudioLevelObserver(100);
+    } catch (e) {
+      logger.warn("[Daily Transport] Failed to start audio level observers", e);
+    }
   }
 
   _validateConnectionParams(
@@ -494,6 +534,13 @@ export class DailyTransport extends Transport {
     }
 
     if (this._abortController?.signal.aborted) return;
+
+    // initDevices() is not guaranteed to have run before we get here:
+    // PipecatClient skips it when both mic and cam start disabled, and on a
+    // reconnect once devices are already initialized. _disconnect() stops
+    // the observers, so make sure they are running for this session or
+    // onLocalAudioLevel / onRemoteAudioLevel never fire.
+    await this.startAudioLevelObservers();
 
     const r = await this._daily.room();
     this._maxMessageSize =
@@ -719,7 +766,22 @@ export class DailyTransport extends Transport {
         }
       }
     };
-    this._callbacks.onDeviceError?.(generateDeviceError(ev.error));
+    const deviceError = generateDeviceError(ev.error);
+    // enableMic()/enableCam() set _micEnabled/_camEnabled optimistically,
+    // but setLocalAudio()/setLocalVideo() are fire-and-forget — no promise,
+    // no synchronous failure signal — so a failed request (blocked
+    // permission, device in use, etc.) leaves that optimistic value wrong
+    // with nothing to correct it: no track-started/stopped ever fires for
+    // an operation that didn't actually take effect. This is the only
+    // signal we get that the request failed, so resync from Daily's actual
+    // state for whichever device(s) it implicates.
+    if (deviceError.devices.includes("mic")) {
+      this._micEnabled = this._daily.localAudio();
+    }
+    if (deviceError.devices.includes("cam")) {
+      this._camEnabled = this._daily.localVideo();
+    }
+    this._callbacks.onDeviceError?.(deviceError);
   }
 
   private async handleLocalAudioTrack(track: MediaStreamTrack) {
@@ -768,8 +830,13 @@ export class DailyTransport extends Transport {
           : undefined
       );
     } else {
-      if (ev.participant?.local && ev.track.kind === "audio") {
-        void this.handleLocalAudioTrack(ev.track);
+      if (ev.participant?.local) {
+        if (ev.track.kind === "audio") {
+          this._micEnabled = true;
+          void this.handleLocalAudioTrack(ev.track);
+        } else if (ev.track.kind === "video") {
+          this._camEnabled = true;
+        }
       }
       this._callbacks.onTrackStarted?.(
         ev.track,
@@ -789,6 +856,13 @@ export class DailyTransport extends Transport {
           : undefined
       );
     } else {
+      if (ev.participant?.local) {
+        if (ev.track.kind === "audio") {
+          this._micEnabled = false;
+        } else if (ev.track.kind === "video") {
+          this._camEnabled = false;
+        }
+      }
       this._callbacks.onTrackStopped?.(
         ev.track,
         ev.participant

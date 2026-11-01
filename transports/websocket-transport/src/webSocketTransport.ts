@@ -1,5 +1,6 @@
 import {
   logger,
+  MediaSupport,
   PipecatClientOptions,
   RTVIError,
   RTVIMessage,
@@ -10,9 +11,11 @@ import {
   UnsupportedFeatureError,
 } from "@pipecat-ai/client-js";
 
-import { ReconnectingWebSocket } from "../../../lib/websocket-utils/reconnectingWebSocket";
-import { DailyMediaManager } from "../../../lib/media-mgmt/dailyMediaManager";
-import { MediaManager } from "../../../lib/media-mgmt/mediaManager";
+import {
+  ReconnectingWebSocket,
+  DailyMediaManager,
+  MediaManager,
+} from "@pipecat-ai/transport-lib";
 import { WebSocketSerializer } from "./serializers/websocketSerializer.ts";
 import { ProtobufFrameSerializer } from "./serializers/protobufSerializer.ts";
 
@@ -23,8 +26,7 @@ export type WebSocketTransportOptions = {
   token?: string;
 };
 
-export interface WebSocketTransportConstructorOptions
-  extends WebSocketTransportOptions {
+export interface WebSocketTransportConstructorOptions extends WebSocketTransportOptions {
   mediaManager?: MediaManager;
   serializer?: WebSocketSerializer;
   recorderSampleRate?: number;
@@ -125,17 +127,19 @@ export class WebSocketTransport extends Transport {
     this.state = "connecting";
 
     this._wsUrl = connectParams?.wsUrl ?? connectParams?.ws_url ?? this._wsUrl;
-    if (connectParams?.token) {
-      const separator = this._wsUrl!.includes("?") ? "&" : "?";
-      this._wsUrl = `${this._wsUrl}${separator}token=${encodeURIComponent(connectParams.token)}`;
-    }
     if (!this._wsUrl) {
       logger.error("No url provided for connection");
       this.state = "error";
       throw new TransportStartError();
     }
+    // Build the connect url locally so a token never sticks to the base url
+    let url = this._wsUrl;
+    if (connectParams?.token) {
+      const separator = url.includes("?") ? "&" : "?";
+      url = `${url}${separator}token=${encodeURIComponent(connectParams.token)}`;
+    }
     try {
-      this._ws = this.initializeWebsocket();
+      this._ws = this.initializeWebsocket(url);
 
       await this._ws.connect();
       await this._mediaManager.connect();
@@ -209,8 +213,8 @@ export class WebSocketTransport extends Transport {
     return this._mediaManager.tracks();
   }
 
-  initializeWebsocket(): ReconnectingWebSocket {
-    const ws = new ReconnectingWebSocket(this._wsUrl!, undefined, {
+  initializeWebsocket(url: string = this._wsUrl!): ReconnectingWebSocket {
+    const ws = new ReconnectingWebSocket(url, undefined, {
       parseBlobToJson: false,
     });
     // disabling the keep alive, there is no API for it inside Pipecat
@@ -227,6 +231,10 @@ export class WebSocketTransport extends Transport {
           if (parsed.message.label === "rtvi-ai") {
             this._onMessage(parsed.message);
           }
+        } else if (parsed.type === "interruption") {
+          // The bot was interrupted server-side; flush any buffered bot audio
+          // so playback stops immediately.
+          await this._mediaManager.interruptBotAudio();
         }
       } catch (e) {
         logger.error("Failed to deserialize incoming message", e);
@@ -336,6 +344,20 @@ export class WebSocketTransport extends Transport {
   public get isSharingScreen(): boolean {
     logger.warn("isSharingScreen not implemented for WebSocketTransport");
     return false;
+  }
+
+  /**
+   * Carries audio only, so the camera, screen share and bot video are ruled
+   * out whatever the media manager can capture.
+   */
+  get mediaSupport(): MediaSupport {
+    return {
+      ...this._mediaManager.mediaSupport,
+      cam: false,
+      screenShare: false,
+      botAudio: true,
+      botVideo: false,
+    };
   }
 
   enableCam(enable: boolean) {

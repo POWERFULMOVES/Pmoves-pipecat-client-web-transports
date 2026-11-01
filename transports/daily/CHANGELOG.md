@@ -5,6 +5,46 @@ All notable changes to **Pipecat Daily WebRTC Transport** will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/daily-transport-v1.7.1...daily-transport-v1.7.2) (2026-10-29)
+
+### Other
+
+* `@pipecat-ai/daily-transport` now requires `@pipecat-ai/client-js` `~1.16.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.16.x alongside this release. ([c5465cd](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c5465cddb143693cc1cac445b47c64e13af59ca4))
+
+## [1.7.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/daily-transport-v1.7.0...daily-transport-v1.7.1) (2026-10-25)
+
+### Changed
+
+* `@pipecat-ai/daily-transport` now requires `@pipecat-ai/client-js` `~1.15.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.15.x alongside this release. ([d2a5122](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/d2a51222639c6013e1202d74a6abea17204b41df))
+
+## [1.7.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/daily-transport-v1.6.9...daily-transport-v1.7.0) (2026-10-16)
+
+### Features
+
+* `DailyTransport` now implements the `mediaSupport` getter, reporting that it carries the user's microphone and camera and the bot's audio and video, plus screen share where the browser can share a screen. `PipecatClient.mediaSupport` combines this with what the bot supports so your UI can hide controls that can't work. Requires `@pipecat-ai/client-js` 1.14.0 or later. ([24829e8](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/24829e8d60ada336fe9fd48e5bc3e0cd8e3adc8b))
+
+### Bug Fixes
+
+* Fixed `onLocalAudioLevel` and `onRemoteAudioLevel` never firing when `DailyTransport` connected without running `initDevices()` first, such as when the client starts with `enableMic: false` and `enableCam: false`, and on every reconnect after a `disconnect()`. The audio level observers now also start after a successful join, skipping any that are already running. If an observer can't start, the transport logs a warning instead of failing `connect()` or `initDevices()`. ([c69b589](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c69b589160cf994b7b476bba685b7c83f9b8cdde), [1ec396f](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/1ec396f99f1feca64148334b0ddcee9bdb33254a))
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @pipecat-ai/transport-lib bumped from ^0.1.0 to ^0.2.0
+
+### Other
+
+* Bumped the `@pipecat-ai/client-js` peer dependency to `~1.14.0`. Projects using `@pipecat-ai/daily-transport` should upgrade `@pipecat-ai/client-js` to 1.14.x. ([6f1bf1a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/6f1bf1a37e7077e54e27a92b810c1e146be781fe))
+* `@pipecat-ai/daily-transport` now depends on `@daily-co/daily-js` `^0.94.0` (previously `^0.90.0`). ([1ffa4f8](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/1ffa4f87edd988bf289768877c16c6d4dd37567d))
+
+## [1.6.9](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/daily-transport-v1.6.8...daily-transport-v1.6.9) (2026-09-15)
+
+
+### Bug Fixes
+
+* Fixed issue with mute toggle states being delayed ([51954df](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/51954df18f7f1f23b6965e863ac0425493f9be4d))
+
 ## [1.6.8](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/daily-transport-v1.6.7...daily-transport-v1.6.8) (2026-07-16)
 
 

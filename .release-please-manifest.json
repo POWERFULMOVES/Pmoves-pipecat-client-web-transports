@@ -1,9 +1,8 @@
 {
-  "transports/daily": "1.6.8",
-  "transports/gemini-live-websocket-transport": "1.5.8",
-  "transports/livekit-transport": "1.0.0",
-  "transports/moq-transport": "0.1.1",
-  "transports/openai-realtime-webrtc-transport": "1.5.8",
-  "transports/small-webrtc-transport": "1.10.7",
-  "transports/websocket-transport": "1.7.1"
+  "lib": "0.2.2",
+  "transports/daily": "1.7.2",
+  "transports/livekit-transport": "1.1.2",
+  "transports/moq-transport": "0.3.2",
+  "transports/small-webrtc-transport": "1.11.2",
+  "transports/websocket-transport": "1.8.2"
 }

@@ -5,6 +5,28 @@ All notable changes to **Pipecat LiveKit Transport** will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/livekit-transport-v1.1.1...livekit-transport-v1.1.2) (2026-10-29)
+
+### Other
+
+* `@pipecat-ai/livekit-transport` now requires `@pipecat-ai/client-js` `~1.16.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.16.x alongside this release. ([c5465cd](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c5465cddb143693cc1cac445b47c64e13af59ca4))
+
+## [1.1.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/livekit-transport-v1.1.0...livekit-transport-v1.1.1) (2026-10-25)
+
+### Changed
+
+* `@pipecat-ai/livekit-transport` now requires `@pipecat-ai/client-js` `~1.15.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.15.x alongside this release. ([d2a5122](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/d2a51222639c6013e1202d74a6abea17204b41df))
+
+## [1.1.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/livekit-transport-v1.0.0...livekit-transport-v1.1.0) (2026-10-17)
+
+### Features
+
+* `LiveKitTransport` now implements the `mediaSupport` getter, reporting that it carries the user's microphone and camera and the bot's audio and video, plus screen share where the browser can share a screen. `PipecatClient.mediaSupport` combines this with what the bot supports so your UI can hide controls that can't work. Requires `@pipecat-ai/client-js` 1.14.0 or later. ([9b4eefc](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/9b4eefce744f36e69acc7e4c4c52425efb18237b))
+
+### Other
+
+* Bumped the `@pipecat-ai/client-js` peer dependency to `~1.14.0`. Projects using `@pipecat-ai/livekit-transport` should upgrade `@pipecat-ai/client-js` to 1.14.x. ([6f1bf1a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/6f1bf1a37e7077e54e27a92b810c1e146be781fe))
+
 ## [1.0.0] - 2026-01-18
 
 ### Added

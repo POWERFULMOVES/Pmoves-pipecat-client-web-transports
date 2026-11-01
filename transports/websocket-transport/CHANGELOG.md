@@ -5,6 +5,50 @@ All notable changes to **Pipecat Websocket Transport** will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/websocket-transport-v1.8.1...websocket-transport-v1.8.2) (2026-10-29)
+
+### Other
+
+* `@pipecat-ai/websocket-transport` now requires `@pipecat-ai/client-js` `~1.16.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.16.x alongside this release. ([c5465cd](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c5465cddb143693cc1cac445b47c64e13af59ca4))
+
+## [1.8.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/websocket-transport-v1.8.0...websocket-transport-v1.8.1) (2026-10-25)
+
+### Changed
+
+* `@pipecat-ai/websocket-transport` now requires `@pipecat-ai/client-js` `~1.15.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.15.x alongside this release. ([d2a5122](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/d2a51222639c6013e1202d74a6abea17204b41df))
+
+## [1.8.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/websocket-transport-v1.7.2...websocket-transport-v1.8.0) (2026-10-16)
+
+### Features
+
+* `WebSocketTransport` now implements the `mediaSupport` getter, reporting that it carries audio only: the camera, screen share, and bot video are always reported as unsupported, the bot's audio is supported, and the microphone follows what the media manager reports. Requires `@pipecat-ai/client-js` 1.14.0 or later. ([0b5fe6c](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/0b5fe6c0c5e4866a71dc491fbead54938b51a863))
+
+### Bug Fixes
+
+* Fixed `WebSocketTransport` piling up tokens on its stored URL across connects. Connecting again with a new `token` and no new `wsUrl` used to open a URL like `wss://host/ws?token=old&token=new`, so most servers read the stale token. The token is now added to the base URL on each connect, which gives `wss://host/ws?token=new`. As a result, a connect without a `token` no longer reuses one from an earlier connect. `initializeWebsocket()` now takes an optional `url` argument that defaults to the stored base URL. ([2e9a012](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/2e9a0128220454f5bd5cea405c6dd652db60b7d2))
+* Fixed `WebSocketTransport` throwing a `TypeError` when a `token` was passed without any URL. It now throws `TransportStartError` and sets the transport state to `"error"`, which is what already happened when neither a URL nor a token was given. ([2e9a012](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/2e9a0128220454f5bd5cea405c6dd652db60b7d2))
+* `@pipecat-ai/websocket-transport` now exports the `WebSocketTransportOptions` and `WebSocketTransportConstructorOptions` types, so you can type the options passed to the `WebSocketTransport` constructor. ([cddd96f](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/cddd96fadbbf06d73d89378f42891aba66460a10))
+* `@pipecat-ai/websocket-transport` now exports the `WebSocketSerializer` interface and the `DeserializedData` type, so you can implement a custom serializer and pass it via the `serializer` option. ([cddd96f](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/cddd96fadbbf06d73d89378f42891aba66460a10))
+* `ProtobufFrameSerializer` now understands the `InterruptionFrame` sent by recent Pipecat servers. Previously these frames caused `Unknown frame kind` deserialization errors. When one arrives, `WebSocketTransport` now stops bot playback and flushes buffered bot audio right away. ([214d7ab](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/214d7abf9db1f655b342b0820a7fc22b0356f575))
+* `ProtobufFrameSerializer` now logs a warning and ignores frame kinds it doesn't recognize, instead of throwing. ([214d7ab](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/214d7abf9db1f655b342b0820a7fc22b0356f575))
+* `TwilioSerializer` now treats Twilio's `clear` event as an interruption, so `WebSocketTransport` flushes buffered bot audio when it's received. Previously the event was ignored. ([214d7ab](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/214d7abf9db1f655b342b0820a7fc22b0356f575))
+
+### Other
+
+* Bumped the `@pipecat-ai/client-js` peer dependency to `~1.14.0`. Projects using `@pipecat-ai/websocket-transport` should upgrade `@pipecat-ai/client-js` to 1.14.x. ([6f1bf1a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/6f1bf1a37e7077e54e27a92b810c1e146be781fe))
+* `@pipecat-ai/websocket-transport` now depends on `@daily-co/daily-js` `^0.94.0` (previously `^0.90.0`), which its `DailyMediaManager`-based media handling uses. ([1ffa4f8](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/1ffa4f87edd988bf289768877c16c6d4dd37567d))
+
+### Miscellaneous Chores
+
+* update transport-lib dependencies to 0.2.0 ([730e0e4](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/730e0e4ca2a2abc9f1c1a5b9b88eff4495e19c5a))
+
+## [1.7.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/websocket-transport-v1.7.1...websocket-transport-v1.7.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* Fixed issue with mute toggle states being delayed ([51954df](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/51954df18f7f1f23b6965e863ac0425493f9be4d))
+
 ## [1.7.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/websocket-transport-v1.7.0...websocket-transport-v1.7.1) (2026-07-16)
 
 

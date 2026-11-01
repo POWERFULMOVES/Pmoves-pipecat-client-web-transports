@@ -5,6 +5,51 @@ All notable changes to **Pipecat MoqTransport** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.3.1...moq-transport-v0.3.2) (2026-10-29)
+
+### Other
+
+* `@pipecat-ai/moq-transport` now requires `@pipecat-ai/client-js` `~1.16.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.16.x alongside this release. ([c5465cd](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/c5465cddb143693cc1cac445b47c64e13af59ca4))
+
+## [0.3.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.3.0...moq-transport-v0.3.1) (2026-10-25)
+
+### Changed
+
+* `@pipecat-ai/moq-transport` now requires `@pipecat-ai/client-js` `~1.15.0` as a peer dependency. Upgrade `@pipecat-ai/client-js` to 1.15.x alongside this release. ([d2a5122](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/d2a51222639c6013e1202d74a6abea17204b41df))
+
+## [0.3.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.2.1...moq-transport-v0.3.0) (2026-10-17)
+
+### Features
+
+* `MoqTransport` now implements the `mediaSupport` getter, reporting that it carries the user's microphone and the bot's audio only; the camera, screen share, and bot video are reported as unsupported. Requires `@pipecat-ai/client-js` 1.14.0 or later. ([4fd131a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/4fd131a658b1ffc2acedbe8cbc1504347f9e0c0c))
+
+### Other
+
+* Bumped the `@pipecat-ai/client-js` peer dependency to `~1.14.0`. Projects using `@pipecat-ai/moq-transport` should upgrade `@pipecat-ai/client-js` to 1.14.x. ([6f1bf1a](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/6f1bf1a37e7077e54e27a92b810c1e146be781fe))
+
+## [0.2.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.2.0...moq-transport-v0.2.1) (2026-10-02)
+
+
+### Bug Fixes
+
+* **moq-transport:** keep trying to reach the relay for 60 seconds ([43b6060](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/43b6060b051510000e73ea26bd7d8ffade96d568))
+
+## [0.2.0](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.1.1...moq-transport-v0.2.0) (2026-09-30)
+
+
+### Features
+
+* **moq-transport:** upgrade to @moq-dev 0.4 ([242dd8c](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/242dd8cb29cfc6087964bf6c00d9807a908b92e0))
+* **moq-transport:** number transcript records and drop replays on resubscribe ([91476a3](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/91476a36324c357928affcac84fa3091125bdab5))
+* **moq-transport:** send session-ending on disconnect and redial when the bot's tracks end without it ([f2ff607](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/f2ff6077a3cf27ca611925a45d8fc18e573e0c4a))
+
+
+### Bug Fixes
+
+* **moq-transport:** add _wasReady flag to handle moq-relay reconnects ([ba308e1](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/ba308e1424114142abf8130db22dd527f54407c2))
+* **moq-transport:** hold client-ready until the bot audio subscription is live ([dc56c47](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/dc56c4700950ec55697705f3fb9f3f86f314eeb8))
+* **moq-transport:** hold ready through relay reconnects ([f25ebc1](https://github.com/pipecat-ai/pipecat-client-web-transports/commit/f25ebc159bd887e6023bff43d1ff0705243f5458))
+
 ## [0.1.1](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/moq-transport-v0.1.0...moq-transport-v0.1.1) (2026-08-13)
 
 
