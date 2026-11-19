@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.3.0](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/compare/transport-lib-v0.2.2...transport-lib-v0.3.0) (2026-11-19)
+
+
+### Features
+
+* report media support from each transport ([33dff50](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/33dff50eff8231ecd708e90a10a38104b25b5e0e))
+* **transport-lib:** add mediaSupport to media managers ([55412ff](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/55412ffd8990142c20eddbee60146380001f01b6))
+
+
+### Bug Fixes
+
+* Fix issue where the DailyMediaManager would not resolve in conne… ([9f7a953](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/9f7a95350753dc75985ce2225495b3ca06a3bbcf))
+* Fix issue where the DailyMediaManager.connect() would not resolve on second call ([dc935d3](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/dc935d3ad1ce76c401b24fc35ae338e3175fef07))
+* Fix param types causing build warnings ([10635bf](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/10635bf0794502b5a2d9c33e7497f892cd1c4bd0))
+* Fix param types causing build warnings ([efc3f45](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/efc3f45c46cbf05dfade3e48dc42924c43690460))
+* Fixed issue with mute toggle states being delayed ([a4051c8](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/a4051c87d4aae2d1007e56400848d6f1efd34455))
+* Fixed issue with mute toggle states being delayed ([51954df](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/51954df18f7f1f23b6965e863ac0425493f9be4d))
+* The dailyMediaManager should use daily for speaker selection ([2ef388f](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/2ef388fdbeefb004b330d81071928fbe5aaa7c30))
+* **transport-lib:** credit OpenAI's MIT license in wavtools ([6c2906f](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/6c2906f6c4e49dfe11202d4f335e661ae598c850))
+* **transport-lib:** credit OpenAI's MIT license in wavtools ([9d5e553](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/9d5e553561536a935c297b5bbbafb6a92e6c2af8))
+* **transport-lib:** keep bot audio playing after an interruption ([cedd761](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/cedd761e5cdfa7edb3d25a0769a607fbbbfe8e54))
+* **transport-lib:** only claim screen share where the browser supports it ([d69d37b](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/d69d37b38e6b9be66091dc578e43eb11d00ce126))
+
+
+### Miscellaneous Chores
+
+* bump @pipecat-ai/client-js dependencies to 1.14.0 ([a58f148](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/a58f148120c748390b5ba1303ff4e49dcbd93703))
+* bump client-js dependency to 1.15 and resolve vulnerabilities ([9265a43](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/9265a43e71be431d9c765eb91e313ec02c0fa17c))
+* bump client-js dependency to version 1.16.0 ([9085f2a](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/9085f2a0e58151fce984a9300fd5dd2cde393493))
+* Bump daily-js dependencies to 0.94.0 ([eff5bf5](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/eff5bf5c3f6bdf977907c09c50da3a884c96b6d7))
+* curate release notes ([b350cbe](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/b350cbe8236cf88e008eecf722dd3730f5b8f34c))
+* curate release notes ([bbb4648](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/bbb4648173c41155daa79b9690da0c98c78701c1))
+* curate release notes ([1d1e4ea](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/1d1e4eae9f7d1e249b0d7f5b5affa7e6abb24793))
+* **main:** release  transport-lib 0.1.1 ([d1f30ad](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/d1f30ad783a8dcac2ddaaffbb2aa23489835d6cb))
+* **main:** release  transport-lib 0.1.1 ([b979abf](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/b979abf56fbf39b61751e9a6f0ca5801d53e7c52))
+* **main:** release  transport-lib 0.2.0 ([1867432](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/186743282faf35c19a1995426b222b2c49502b87))
+* **main:** release  transport-lib 0.2.1 ([6ee45f1](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/6ee45f1527cd5d7657c4866fd572000da22d8e02))
+* **main:** release  transport-lib 0.2.2 ([5f2457c](https://github.com/POWERFULMOVES/Pmoves-pipecat-client-web-transports/commit/5f2457c770346d65ae6f6390881f5c06973fa92b))
+
 ## [0.2.2](https://github.com/pipecat-ai/pipecat-client-web-transports/compare/transport-lib-v0.2.1...transport-lib-v0.2.2) (2026-10-29)
 
 ### Other
